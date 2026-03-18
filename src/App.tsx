@@ -22,7 +22,7 @@ import {
 
 // --- Components ---
 
-const Navbar = ({ activePage, setActivePage }: { activePage: string, setActivePage: (p: string) => void }) => {
+const Navbar = ({ activePage, setActivePage, onCtaClick }: { activePage: string, setActivePage: (p: string) => void, onCtaClick: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -63,8 +63,8 @@ const Navbar = ({ activePage, setActivePage }: { activePage: string, setActivePa
             </button>
           ))}
           <button 
-            onClick={() => setActivePage('contact')}
-            className="bg-emerald-500 hover:bg-emerald-600 text-black font-bold px-6 py-2 rounded-full transition-all transform hover:scale-105 active:scale-95"
+            onClick={onCtaClick}
+            className="bg-emerald-500 hover:bg-emerald-600 text-black font-bold px-6 py-2 rounded-full transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(16,185,129,0.3)]"
           >
             Book Call
           </button>
@@ -99,7 +99,7 @@ const Navbar = ({ activePage, setActivePage }: { activePage: string, setActivePa
             ))}
             <button 
               onClick={() => {
-                setActivePage('contact');
+                onCtaClick();
                 setIsMobileMenuOpen(false);
               }}
               className="bg-emerald-500 text-black font-bold px-6 py-3 rounded-xl text-center"
@@ -464,6 +464,80 @@ const Testimonials = () => (
   </section>
 );
 
+const FAQ = () => {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const faqs = [
+    {
+      q: "How much do your services cost?",
+      a: "Our pricing is performance-based and tailored to your brand's specific needs. We typically work with brands spending $5k+ per month on ads. During our strategy call, we'll provide a custom quote based on your goals and current scale."
+    },
+    {
+      q: "How soon can I expect to see results?",
+      a: "While organic growth takes time, our paid ad strategies often show positive trends within the first 14-30 days. We focus on rapid testing to find winning creatives and audiences as quickly as possible."
+    },
+    {
+      q: "Which industries do you specialize in?",
+      a: "We specialize in high-growth E-commerce (DTC), SaaS, and Personal Brands. If you have a product or service with a clear value proposition, our data-driven frameworks will likely work for you."
+    },
+    {
+      q: "Do you guarantee results?",
+      a: "While no one can guarantee specific numbers in marketing, we guarantee our commitment to ROI. If we don't hit our agreed-upon KPIs within the first 90 days, we work for free until we do. We only win when you win."
+    },
+    {
+      q: "What makes Mr Marketer different from other agencies?",
+      a: "Most agencies focus on 'vanity metrics' like likes and reach. We focus on ROAS, CAC, and LTV. We are brand owners ourselves, so we treat your ad spend like it's our own money."
+    }
+  ];
+
+  return (
+    <section className="py-24 bg-black">
+      <div className="max-w-3xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-sm font-bold text-emerald-400 uppercase tracking-[0.3em] mb-4">Common Questions</h2>
+          <p className="text-4xl md:text-5xl font-black text-white">Everything You Need to Know.</p>
+        </div>
+
+        <div className="space-y-4">
+          {faqs.map((faq, idx) => (
+            <div 
+              key={idx} 
+              className="border border-white/10 rounded-2xl overflow-hidden bg-zinc-900/50 transition-all hover:border-emerald-500/30"
+            >
+              <button 
+                onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+                className="w-full p-6 text-left flex justify-between items-center gap-4"
+              >
+                <span className="text-lg font-bold text-white">{faq.q}</span>
+                <motion.div
+                  animate={{ rotate: openIndex === idx ? 180 : 0 }}
+                  className="text-emerald-400 flex-shrink-0"
+                >
+                  <ChevronDown size={24} />
+                </motion.div>
+              </button>
+              <AnimatePresence>
+                {openIndex === idx && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-6 pt-0 text-zinc-400 leading-relaxed border-t border-white/5">
+                      {faq.a}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const ContactForm = () => (
   <section id="contact" className="py-24 bg-zinc-950">
     <div className="max-w-7xl mx-auto px-6">
@@ -703,7 +777,7 @@ export default function App() {
 
   return (
     <div className="bg-black text-white font-sans selection:bg-emerald-500 selection:text-black">
-      <Navbar activePage={activePage} setActivePage={setActivePage} />
+      <Navbar activePage={activePage} setActivePage={setActivePage} onCtaClick={scrollToContact} />
       
       <main>
         {activePage === 'home' && (
@@ -717,6 +791,7 @@ export default function App() {
             <Services />
             <HowItWorks />
             <Testimonials />
+            <FAQ />
             <ContactForm />
           </motion.div>
         )}
