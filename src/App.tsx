@@ -411,7 +411,7 @@ const Testimonials = () => (
         <p className="text-4xl md:text-5xl font-black text-white">Don't Take Our Word For It.</p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-3 gap-8 mb-20">
         {[1, 2, 3].map((i) => (
           <div key={i} className="p-8 rounded-3xl bg-zinc-900 border border-white/5 relative">
             <div className="flex gap-1 text-emerald-400 mb-6">
@@ -426,6 +426,36 @@ const Testimonials = () => (
                 <p className="text-white font-bold">John Doe</p>
                 <p className="text-zinc-500 text-xs uppercase tracking-widest font-bold">CEO, Brandly</p>
               </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Video Testimonials */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {[
+          { name: 'Sarah Jenkins', company: 'Luxe Beauty', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800' },
+          { name: 'Michael Chen', company: 'TechFlow', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800' },
+          { name: 'Emma Wilson', company: 'EcoStyle', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=800' }
+        ].map((video, idx) => (
+          <div key={idx} className="group relative rounded-3xl overflow-hidden border border-white/10 aspect-[9/16] cursor-pointer">
+            <img 
+              src={video.img} 
+              alt={video.name} 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+            
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-16 h-16 bg-emerald-500/90 text-black rounded-full flex items-center justify-center transform transition-transform group-hover:scale-110 shadow-[0_0_30px_rgba(16,185,129,0.5)]">
+                <Play size={32} fill="currentColor" />
+              </div>
+            </div>
+
+            <div className="absolute bottom-6 left-6">
+              <p className="text-white font-bold text-lg">{video.name}</p>
+              <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest">{video.company}</p>
             </div>
           </div>
         ))}
@@ -547,10 +577,120 @@ const Footer = () => (
   </footer>
 );
 
+const ExitIntentPopup = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+      />
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="relative bg-zinc-900 border border-white/10 p-8 md:p-12 rounded-[2rem] max-w-2xl w-full shadow-[0_0_50px_rgba(16,185,129,0.2)] overflow-hidden"
+      >
+        <button 
+          onClick={onClose}
+          className="absolute top-6 right-6 text-zinc-500 hover:text-white transition-colors"
+        >
+          <X size={24} />
+        </button>
+
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-blue-500" />
+
+        {!isSubmitted ? (
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
+              <Zap size={14} />
+              Limited Time Offer
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+              Wait! Get Your <span className="text-emerald-400">Free</span> Social Media Audit.
+            </h2>
+            <p className="text-zinc-400 text-lg mb-8">
+              Before you go, let our experts analyze your current strategy and give you a custom roadmap to 2x your engagement. **Value: $497** - Yours for free.
+            </p>
+
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                setIsSubmitted(true);
+              }}
+              className="space-y-4"
+            >
+              <div className="grid md:grid-cols-2 gap-4">
+                <input 
+                  required
+                  type="text" 
+                  placeholder="Your Name" 
+                  className="w-full bg-black border border-white/10 rounded-xl px-4 py-4 text-white focus:border-emerald-500 outline-none transition-all"
+                />
+                <input 
+                  required
+                  type="email" 
+                  placeholder="Work Email" 
+                  className="w-full bg-black border border-white/10 rounded-xl px-4 py-4 text-white focus:border-emerald-500 outline-none transition-all"
+                />
+              </div>
+              <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-black py-4 rounded-xl text-lg transition-all transform active:scale-95 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                Claim My Free Audit Now
+              </button>
+              <p className="text-center text-zinc-500 text-xs">
+                No spam. Just pure value. We respect your privacy.
+              </p>
+            </form>
+          </div>
+        ) : (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-12"
+          >
+            <div className="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-8">
+              <CheckCircle2 size={40} />
+            </div>
+            <h2 className="text-3xl font-black text-white mb-4">You're on the List!</h2>
+            <p className="text-zinc-400 mb-8">
+              Our strategy team will reach out within 24 hours to schedule your audit. Get ready to scale.
+            </p>
+            <button 
+              onClick={onClose}
+              className="text-emerald-400 font-bold hover:underline"
+            >
+              Back to Website
+            </button>
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
+  );
+};
+
 // --- Main App ---
 
 export default function App() {
   const [activePage, setActivePage] = useState('home');
+  const [showExitPopup, setShowExitPopup] = useState(false);
+  const [hasShownPopup, setHasShownPopup] = useState(false);
+
+  useEffect(() => {
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !hasShownPopup) {
+        setShowExitPopup(true);
+        setHasShownPopup(true);
+      }
+    };
+
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+  }, [hasShownPopup]);
 
   const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
@@ -679,6 +819,14 @@ export default function App() {
       </main>
 
       <Footer />
+      <AnimatePresence>
+        {showExitPopup && (
+          <ExitIntentPopup 
+            isOpen={showExitPopup} 
+            onClose={() => setShowExitPopup(false)} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
